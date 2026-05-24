@@ -5,12 +5,20 @@ import hashlib
 
 ROOT = Path(__file__).resolve().parent.parent
 
-PROMPTS_DIR = ROOT / "prompts"
-PROFILES_SOURCE_DIR = ROOT / "profiles" / "source"
-PROFILES_GENERATED_DIR = ROOT / "profiles" / "generated"
+GHCP_ROOT = ROOT / ".github"
+
+PROMPTS_DIR = GHCP_ROOT / "prompts"
+
+PROFILES_SOURCE_DIR = (
+    GHCP_ROOT / "profiles" / "source"
+)
+
+PROFILES_GENERATED_DIR = (
+    GHCP_ROOT / "profiles" / "generated"
+)
 
 COPILOT_INSTRUCTIONS = (
-    ROOT / ".github" / "copilot-instructions.md"
+    GHCP_ROOT / "copilot-instructions.md"
 )
 
 PROMPT_PATTERN = re.compile(
