@@ -1,126 +1,127 @@
-```xml id="’wini265"
 <!--
 GHCP Global Engineering Governance
 Purpose:
-Universal repository-wide engineering governance and execution discipline.
+Global repository-wide governance and execution discipline.
 
-This file intentionally avoids domain specialization.
-Engineering specialization belongs to:
-- /prompts/*
+This file intentionally avoids deep domain specialization.
+Reusable engineering expertise belongs inside:
+- /modules/*
 - /profiles/*
+
+Runtime execution artifacts belong inside:
+- /prompts/*
 -->
 
-<prompt>
+<governance>
 
 <governanceIdentity>
 
     You are operating inside the GHCP engineering intelligence platform.
 
-    Your responsibility is to:
-    - maintain engineering rigor
+    Your responsibilities:
+
     - preserve architectural integrity
-    - enforce operational discipline
+    - maintain engineering rigor
     - prioritize maintainability
+    - enforce operational discipline
+    - minimize technical debt
     - produce production-grade outcomes
 
     Optimize for:
+
     - correctness
     - determinism
     - maintainability
-    - operational clarity
     - scalability
+    - operational clarity
     - testability
     - security
-    - minimal technical debt
+    - reproducibility
 
 </governanceIdentity>
 
-<repositoryExecutionModel>
+<repositoryArchitecture>
 
     Repository hierarchy:
 
     - .github/copilot-instructions.md
-        -> global engineering governance
+        -> global governance
 
-    - /prompts/*
-        -> reusable engineering specialization layers
+    - .github/modules/*
+        -> reusable engineering intelligence
 
-    - /profiles/source/*
-        -> workload orchestration definitions
+    - .github/profiles/*
+        -> orchestration definitions
 
-    - /profiles/generated/*
-        -> generated execution profiles
+    - .github/prompts/*
+        -> generated runtime prompts
 
-    - /tools/*
-        -> orchestration infrastructure
+    - .github/tools/*
+        -> orchestration tooling
 
-    Specialization responsibilities MUST remain inside prompts and profiles.
+    - .github/hooks/*
+        -> validation and governance hooks
 
-    Do NOT duplicate specialization logic globally.
+    - .github/skills/*
+        -> operational accelerators
 
-</repositoryExecutionModel>
+    Architecture rules:
+
+    - modules define reusable expertise
+    - profiles define orchestration
+    - prompts are generated runtime artifacts
+    - governance remains globally reusable
+    - avoid duplicated specialization logic
+    - preserve deterministic composition
+
+</repositoryArchitecture>
 
 <coreExecutionPrinciples>
 
     - Think systematically and from first principles.
     - Prioritize correctness over speed.
-    - Prefer maintainable solutions over clever abstractions.
+    - Prefer maintainable systems over clever abstractions.
     - Keep changes focused and reversible.
-    - Avoid architectural sprawl.
     - Preserve operational simplicity.
     - Optimize for long-term maintainability.
-    - Keep execution deterministic.
+    - Keep runtime behavior deterministic.
     - Prefer explicit behavior over hidden complexity.
     - Minimize accidental technical debt.
+    - Prefer composable architectures.
 
 </coreExecutionPrinciples>
 
-<repositoryGovernance>
+<engineeringGovernance>
 
     Enforce:
 
     - strong typing everywhere
-    - strict compiler and linting compatibility
+    - strict compiler compatibility
     - zero-warning philosophy
+    - schema-based validation
     - structured testing discipline
     - deterministic CI/CD behavior
-    - documentation synchronization
     - explicit configuration management
-    - security-first implementation
+    - documentation synchronization
     - observability readiness
     - operational maintainability
 
-</repositoryGovernance>
+</engineeringGovernance>
 
 <architectureGovernance>
 
     - Prefer modular architectures.
     - Keep domain boundaries explicit.
-    - Avoid tightly coupled systems.
     - Prefer composition over inheritance.
-    - Minimize hidden side effects.
+    - Avoid tightly coupled systems.
     - Keep dependencies intentional.
-    - Prefer deterministic execution flows.
-    - Optimize for operational clarity.
     - Avoid giant monolithic implementations.
-    - Keep abstractions justified and measurable.
+    - Minimize hidden side effects.
+    - Keep abstractions measurable and justified.
+    - Prefer deterministic execution flows.
+    - Preserve operational clarity.
 
 </architectureGovernance>
-
-<engineeringDiscipline>
-
-    - Keep changes minimal and focused.
-    - Avoid unnecessary rewrites.
-    - Preserve backward compatibility where practical.
-    - Clearly document breaking changes.
-    - Keep migration paths explicit.
-    - Optimize readability aggressively.
-    - Prefer self-documenting implementations.
-    - Use high-quality naming consistently.
-    - Keep operational ownership clear.
-    - Optimize for troubleshooting simplicity.
-
-</engineeringDiscipline>
 
 <typingAndStrictness>
 
@@ -128,17 +129,17 @@ Engineering specialization belongs to:
 
     - explicit typing
     - strict compiler compatibility
-    - zero-warning philosophy
     - null safety
     - immutable data where practical
     - exhaustive handling patterns
     - explicit contracts
     - deterministic interfaces
+    - zero-warning philosophy
 
     Avoid:
 
-    - implicit any-like behavior
     - weak typing
+    - implicit any-like behavior
     - silent runtime assumptions
     - unchecked dynamic behavior
     - unsafe casts without justification
@@ -151,12 +152,11 @@ Engineering specialization belongs to:
 
     - schema-based validation
     - least-privilege access
-    - parameterized queries
     - secure secret handling
+    - parameterized queries
     - safe logging practices
     - explicit authorization boundaries
     - secure-by-default implementation
-    - secure transport assumptions
     - sanitized external inputs
     - operational auditability
 
@@ -183,16 +183,13 @@ Engineering specialization belongs to:
     - explicit edge-case validation
     - CI-enforced verification
     - meaningful assertions
-    - operational scenario validation
     - regression protection
 
-    Tests should use:
+    Test execution structure:
 
     - given
     - when
     - then
-
-    execution structure consistently.
 
 </testingGovernance>
 
@@ -200,7 +197,7 @@ Engineering specialization belongs to:
 
     Documentation must remain synchronized with implementation.
 
-    On every meaningful change:
+    On meaningful changes:
 
     - review impacted documentation
     - update affected examples
@@ -209,23 +206,19 @@ Engineering specialization belongs to:
     - maintain operational runbooks
     - document migration impacts
 
-    Code is the source of truth.
-
-    Documentation must reflect actual runtime behavior.
+    Code remains the source of truth.
 
 </documentationGovernance>
 
 <configurationGovernance>
 
     - Externalize environment-specific configuration.
-    - Avoid hardcoded runtime assumptions.
     - Use typed configuration models.
     - Validate configuration during startup.
     - Keep runtime behavior environment-agnostic.
     - Prefer immutable runtime configuration.
     - Document required configuration explicitly.
     - Keep secret management externalized.
-    - Avoid configuration sprawl.
     - Preserve deterministic deployment behavior.
 
 </configurationGovernance>
@@ -239,32 +232,21 @@ Engineering specialization belongs to:
     - Prefer graceful degradation behavior.
     - Avoid operational opacity.
     - Keep runtime flows understandable.
-    - Design for incident-response workflows.
     - Minimize operational cognitive load.
     - Preserve deployment reproducibility.
 
 </operationalGovernance>
 
-<ciCdGovernance>
+<platformContext>
 
     Platform assumptions:
 
     - GitLab CI/CD
     - Azure cloud platform
     - AKS Kubernetes environments
+    - enterprise operational tooling
 
-    CI/CD expectations:
-
-    - deterministic pipelines
-    - reproducible builds
-    - isolated environments
-    - immutable artifacts
-    - explicit promotion workflows
-    - rollback safety
-    - deployment observability
-    - maintainable pipeline architecture
-
-</ciCdGovernance>
+</platformContext>
 
 <agentExecutionProtocol>
 
@@ -275,8 +257,8 @@ Engineering specialization belongs to:
     - validate assumptions continuously
     - maintain verification artifacts
     - isolate temporary artifacts
-    - document architectural trade-offs
-    - validate instruction adherence
+    - document architectural tradeoffs
+    - verify instruction adherence
     - verify tests before completion
     - verify documentation synchronization
     - preserve repository consistency
@@ -353,5 +335,4 @@ Engineering specialization belongs to:
 
 </deliveryExpectations>
 
-</prompt>
-```
+</governance>
