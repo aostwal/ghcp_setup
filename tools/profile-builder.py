@@ -6,9 +6,7 @@ import hashlib
 ROOT = Path(__file__).resolve().parent.parent
 
 PROMPTS_DIR = ROOT / "prompts"
-
 MODULES_DIR = ROOT / "modules"
-
 PROFILES_DIR = ROOT / "profiles"
 
 COPILOT_INSTRUCTIONS = (
@@ -22,6 +20,8 @@ MODULE_PATTERN = re.compile(
 SECTION_PATTERN = re.compile(
     r"<([a-zA-Z0-9\-_]+)>"
 )
+
+MAX_RUNTIME_PROMPT_SIZE_KB = 180
 
 
 def read_file(path: Path) -> str:
@@ -82,9 +82,7 @@ def extract_sections(content: str):
     )
 
 
-def detect_duplicate_sections(
-    module_contents
-):
+def detect_duplicate_sections(module_contents):
 
     seen = {}
 
@@ -122,7 +120,23 @@ def generate_checksum(content: str):
     ).hexdigest()[:12]
 
 
-def build_profile(profile_path: Path):
+def validate_runtime_prompt_size(content: str):
+
+    size_kb = round(
+        len(content.encode("utf-8")) / 1024,
+        2
+    )
+
+    if size_kb > MAX_RUNTIME_PROMPT_SIZE_KB:
+
+        print(
+            f"[WARN] Runtime prompt exceeds recommended size: {size_kb} KB"
+        )
+
+    return size_kb
+
+
+def build_runtime_prompt(profile_path: Path):
 
     validate_file_exists(
         COPILOT_INSTRUCTIONS
@@ -164,9 +178,7 @@ def build_profile(profile_path: Path):
         for section, first, second in duplicates:
 
             print(
-                f"  Section <{section}> "
-                f"exists in both "
-                f"{first} and {second}"
+                f"  Section <{section}> exists in both {first} and {second}"
             )
 
         print()
@@ -174,7 +186,7 @@ def build_profile(profile_path: Path):
     assembled_sections = []
 
     assembled_sections.append(
-        f"<!-- GENERATED PROFILE: {profile_path.name} -->"
+        f"<!-- GENERATED RUNTIME PROMPT: {profile_path.name} -->"
     )
 
     assembled_sections.append(
@@ -186,20 +198,7 @@ def build_profile(profile_path: Path):
     )
 
     assembled_sections.append(
-        f"<!-- GENERATED AT: "
-        f"{datetime.utcnow().isoformat()}Z -->"
-    )
-
-    assembled_sections.append(
-        "\n<!-- ================================================= -->"
-    )
-
-    assembled_sections.append(
-        "<!-- BEGIN GLOBAL GOVERNANCE -->"
-    )
-
-    assembled_sections.append(
-        "<!-- ================================================= -->\n"
+        f"<!-- GENERATED AT: {datetime.utcnow().isoformat()}Z -->"
     )
 
     governance_content = read_file(
@@ -211,81 +210,16 @@ def build_profile(profile_path: Path):
     )
 
     assembled_sections.append(
-        "\n<!-- ================================================= -->"
-    )
-
-    assembled_sections.append(
-        "<!-- END GLOBAL GOVERNANCE -->"
-    )
-
-    assembled_sections.append(
-        "<!-- ================================================= -->\n"
-    )
-
-    assembled_sections.append(
-        "\n<!-- ================================================= -->"
-    )
-
-    assembled_sections.append(
-        "<!-- BEGIN PROFILE ORCHESTRATION -->"
-    )
-
-    assembled_sections.append(
-        "<!-- ================================================= -->\n"
-    )
-
-    assembled_sections.append(
         profile_content
     )
 
-    assembled_sections.append(
-        "\n<!-- ================================================= -->"
-    )
-
-    assembled_sections.append(
-        "<!-- END PROFILE ORCHESTRATION -->"
-    )
-
-    assembled_sections.append(
-        "<!-- ================================================= -->\n"
-    )
-
-    for module_path, (_, module_content) in zip(
-        module_paths,
-        module_contents
-    ):
-
-        assembled_sections.append(
-            "\n<!-- ================================================= -->"
-        )
-
-        assembled_sections.append(
-            f"<!-- BEGIN MODULE: "
-            f"{module_path.name} -->"
-        )
-
-        assembled_sections.append(
-            "<!-- ================================================= -->\n"
-        )
+    for _, module_content in module_contents:
 
         assembled_sections.append(
             module_content
         )
 
-        assembled_sections.append(
-            "\n<!-- ================================================= -->"
-        )
-
-        assembled_sections.append(
-            f"<!-- END MODULE: "
-            f"{module_path.name} -->"
-        )
-
-        assembled_sections.append(
-            "<!-- ================================================= -->\n"
-        )
-
-    final_content = "\n".join(
+    final_content = "\n\n".join(
         assembled_sections
     )
 
@@ -294,8 +228,11 @@ def build_profile(profile_path: Path):
     )
 
     final_content += (
-        f"\n<!-- PROFILE CHECKSUM: "
-        f"{checksum} -->\n"
+        f"\n<!-- RUNTIME PROMPT CHECKSUM: {checksum} -->\n"
+    )
+
+    size_kb = validate_runtime_prompt_size(
+        final_content
     )
 
     output_name = profile_path.name.replace(
@@ -312,17 +249,8 @@ def build_profile(profile_path: Path):
         encoding="utf-8"
     )
 
-    size_kb = round(
-        len(
-            final_content.encode("utf-8")
-        ) / 1024,
-        2
-    )
-
     print(
-        f"[OK] Generated: "
-        f"{output_path.name} "
-        f"({size_kb} KB)"
+        f"[OK] Generated runtime prompt: {output_path.name} ({size_kb} KB)"
     )
 
 
@@ -335,8 +263,7 @@ def build_all_profiles():
     )
 
     print(
-        f"[INFO] Found "
-        f"{len(profiles)} profiles."
+        f"[INFO] Found {len(profiles)} profiles."
     )
 
     if not profiles:
@@ -349,10 +276,10 @@ def build_all_profiles():
 
     for profile in profiles:
 
-        build_profile(profile)
+        build_runtime_prompt(profile)
 
     print(
-        "\n[INFO] Generation complete."
+        "\n[INFO] Runtime prompt generation complete."
     )
 
 
