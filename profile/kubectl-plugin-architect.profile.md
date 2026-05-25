@@ -38,16 +38,16 @@
 
     Compose modules:
 
-    - prompts/core-engineering.prompt.md
-    - prompts/workflow-orchestration.prompt.md
-    - prompts/go-platform.prompt.md
-    - prompts/kubernetes-platform.prompt.md
-    - prompts/docker-platform.prompt.md
-    - prompts/gitlab-ci.prompt.md
+    - modules/core-engineering.prompt.md
+    - modules/workflow-orchestration.prompt.md
+    - modules/go-platform.prompt.md
+    - modules/kubernetes-platform.prompt.md
+    - modules/docker-platform.prompt.md
+    - modules/gitlab-ci.prompt.md
 
     Optional execution module:
 
-    - prompts/execution-runtime.prompt.md
+    - modules/execution-runtime.prompt.md
 
 </moduleComposition>
 

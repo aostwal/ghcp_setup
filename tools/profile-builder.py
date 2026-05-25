@@ -1,70 +1,58 @@
 from pathlib import Path
-from datetime import datetime
 import re
-import hashlib
+import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 
-PROMPTS_DIR = ROOT / "prompts"
 MODULES_DIR = ROOT / "modules"
-PROFILES_DIR = ROOT / "profiles"
+PROFILES_DIR = ROOT / "profile"
+GENERATED_PROMPTS_DIR = ROOT / "prompts"
 
-COPILOT_INSTRUCTIONS = (
-    ROOT / "copilot-instructions.md"
-)
-
-MODULE_PATTERN = re.compile(
+MODULE_REFERENCE_PATTERN = re.compile(
     r"-\s+modules\/([a-zA-Z0-9\-_\.]+)"
 )
 
-SECTION_PATTERN = re.compile(
-    r"<([a-zA-Z0-9\-_]+)>"
+PROFILE_COMMAND_PATTERN = re.compile(
+    r"Command:\s*\n\s*\/([a-zA-Z0-9\-_]+)"
 )
-
-MAX_RUNTIME_PROMPT_SIZE_KB = 180
 
 
 def read_file(path: Path) -> str:
-
-    return path.read_text(
-        encoding="utf-8"
-    )
-
-
-def validate_file_exists(path: Path):
-
-    if not path.exists():
-
-        raise FileNotFoundError(
-            f"Missing required file:\n{path}"
-        )
+    return path.read_text(encoding="utf-8")
 
 
 def extract_module_paths(profile_content: str):
 
-    matches = MODULE_PATTERN.findall(
+    matches = MODULE_REFERENCE_PATTERN.findall(
         profile_content
     )
 
-    ordered_unique = []
+    return [
+        MODULES_DIR / match
+        for match in matches
+    ]
 
-    for match in matches:
 
-        path = (
-            MODULES_DIR / match
+def extract_profile_command(profile_content: str):
+
+    match = PROFILE_COMMAND_PATTERN.search(
+        profile_content
+    )
+
+    if not match:
+        raise ValueError(
+            "Profile missing command definition"
         )
 
-        if path not in ordered_unique:
-            ordered_unique.append(path)
-
-    return ordered_unique
+    return match.group(1)
 
 
 def validate_module_exists(module_paths):
 
     missing = [
-        p for p in module_paths
-        if not p.exists()
+        module
+        for module in module_paths
+        if not module.exists()
     ]
 
     if missing:
@@ -75,208 +63,125 @@ def validate_module_exists(module_paths):
         )
 
 
-def extract_sections(content: str):
+def validate_required_directories():
 
-    return SECTION_PATTERN.findall(
-        content
-    )
+    required = [
+        MODULES_DIR,
+        PROFILES_DIR,
+        GENERATED_PROMPTS_DIR,
+    ]
 
+    missing = [
+        directory
+        for directory in required
+        if not directory.exists()
+    ]
 
-def detect_duplicate_sections(module_contents):
+    if missing:
 
-    seen = {}
-
-    duplicates = []
-
-    for module_name, content in module_contents:
-
-        sections = extract_sections(
-            content
+        raise FileNotFoundError(
+            "Missing required directories:\n" +
+            "\n".join(str(m) for m in missing)
         )
 
-        for section in sections:
 
-            if section in seen:
+def build_profile(profile_path: Path):
 
-                duplicates.append(
-                    (
-                        section,
-                        seen[section],
-                        module_name
-                    )
-                )
+    print(f"[INFO] Building profile: {profile_path.name}")
 
-            else:
+    profile_content = read_file(profile_path)
 
-                seen[section] = module_name
-
-    return duplicates
-
-
-def generate_checksum(content: str):
-
-    return hashlib.sha256(
-        content.encode("utf-8")
-    ).hexdigest()[:12]
-
-
-def validate_runtime_prompt_size(content: str):
-
-    size_kb = round(
-        len(content.encode("utf-8")) / 1024,
-        2
-    )
-
-    if size_kb > MAX_RUNTIME_PROMPT_SIZE_KB:
-
-        print(
-            f"[WARN] Runtime prompt exceeds recommended size: {size_kb} KB"
-        )
-
-    return size_kb
-
-
-def build_runtime_prompt(profile_path: Path):
-
-    validate_file_exists(
-        COPILOT_INSTRUCTIONS
-    )
-
-    profile_content = read_file(
-        profile_path
+    command_name = extract_profile_command(
+        profile_content
     )
 
     module_paths = extract_module_paths(
         profile_content
     )
 
-    validate_module_exists(
-        module_paths
-    )
-
-    module_contents = []
-
-    for module_path in module_paths:
-
-        module_contents.append(
-            (
-                module_path.name,
-                read_file(module_path)
-            )
-        )
-
-    duplicates = detect_duplicate_sections(
-        module_contents
-    )
-
-    if duplicates:
-
-        print(
-            "\n[WARNING] Duplicate XML sections detected:\n"
-        )
-
-        for section, first, second in duplicates:
-
-            print(
-                f"  Section <{section}> exists in both {first} and {second}"
-            )
-
-        print()
+    validate_module_exists(module_paths)
 
     assembled_sections = []
 
     assembled_sections.append(
-        f"<!-- GENERATED RUNTIME PROMPT: {profile_path.name} -->"
+        "<!-- GENERATED RUNTIME PROMPT -->"
     )
 
     assembled_sections.append(
-        "<!-- DO NOT EDIT GENERATED FILE DIRECTLY -->"
+        "<!-- DO NOT EDIT DIRECTLY -->"
     )
 
     assembled_sections.append(
-        "<!-- GENERATED BY profile-builder.py -->"
+        f"<!-- SOURCE PROFILE: {profile_path.name} -->"
     )
 
-    assembled_sections.append(
-        f"<!-- GENERATED AT: {datetime.utcnow().isoformat()}Z -->"
-    )
+    assembled_sections.append("\n")
 
-    governance_content = read_file(
-        COPILOT_INSTRUCTIONS
-    )
+    assembled_sections.append(profile_content)
 
-    assembled_sections.append(
-        governance_content
-    )
+    for module_path in module_paths:
 
-    assembled_sections.append(
-        profile_content
-    )
-
-    for _, module_content in module_contents:
+        assembled_sections.append("\n")
 
         assembled_sections.append(
-            module_content
+            f"<!-- BEGIN MODULE: {module_path.name} -->"
         )
 
-    final_content = "\n\n".join(
-        assembled_sections
-    )
+        assembled_sections.append("\n")
 
-    checksum = generate_checksum(
-        final_content
-    )
+        assembled_sections.append(
+            read_file(module_path)
+        )
 
-    final_content += (
-        f"\n<!-- RUNTIME PROMPT CHECKSUM: {checksum} -->\n"
-    )
+        assembled_sections.append("\n")
 
-    size_kb = validate_runtime_prompt_size(
-        final_content
-    )
+        assembled_sections.append(
+            f"<!-- END MODULE: {module_path.name} -->"
+        )
 
-    output_name = profile_path.name.replace(
-        ".profile.md",
-        ".prompt.md"
-    )
+    output_name = f"{command_name}.prompt.md"
 
     output_path = (
-        PROMPTS_DIR / output_name
+        GENERATED_PROMPTS_DIR / output_name
+    )
+
+    output_path.parent.mkdir(
+        parents=True,
+        exist_ok=True
     )
 
     output_path.write_text(
-        final_content,
+        "\n".join(assembled_sections),
         encoding="utf-8"
     )
 
+    size_kb = round(
+        output_path.stat().st_size / 1024,
+        2
+    )
+
     print(
-        f"[OK] Generated runtime prompt: {output_path.name} ({size_kb} KB)"
+        f"[OK] Generated runtime prompt: "
+        f"{output_name} ({size_kb} KB)"
     )
 
 
 def build_all_profiles():
 
     profiles = sorted(
-        PROFILES_DIR.glob(
-            "*.profile.md"
-        )
-    )
-
-    print(
-        f"[INFO] Found {len(profiles)} profiles."
+        PROFILES_DIR.glob("*.profile.md")
     )
 
     if not profiles:
 
         print(
-            "[INFO] No profiles found."
+            "[ERROR] No source profiles found."
         )
 
-        return
+        sys.exit(1)
 
     for profile in profiles:
-
-        build_runtime_prompt(profile)
+        build_profile(profile)
 
     print(
         "\n[INFO] Runtime prompt generation complete."
@@ -284,5 +189,7 @@ def build_all_profiles():
 
 
 if __name__ == "__main__":
+
+    validate_required_directories()
 
     build_all_profiles()
