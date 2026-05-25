@@ -1,204 +1,190 @@
 from pathlib import Path
-import hashlib
 import re
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 
+MODULES_DIR = ROOT / "modules"
+PROFILES_DIR = ROOT / "profile"
 PROMPTS_DIR = ROOT / "prompts"
 
-PROFILES_DIR = ROOT / "profiles"
+PROMPT_REFERENCE_PATTERN = re.compile(
+    r"-\s+prompts\/([a-zA-Z0-9\-_\.]+)"
+)
 
-MODULES_DIR = ROOT / "modules"
+PROFILE_COMMAND_PATTERN = re.compile(
+    r"Command:\s*\n\s*\/([a-zA-Z0-9\-_]+)"
+)
 
-MAX_PROMPT_SIZE_KB = 180
-
-REQUIRED_GOVERNANCE_MARKERS = [
-    "BEGIN GLOBAL GOVERNANCE",
-    "END GLOBAL GOVERNANCE",
-]
-
-FORBIDDEN_MODULE_PATTERNS = [
-    r"modules\/.*\.module\.md"
-]
-
-PROMPT_EXTENSION = ".prompt.md"
-
-PROFILE_EXTENSION = ".profile.md"
+FAILURES = []
+WARNINGS = []
 
 
-def calculate_size_kb(path: Path):
-
-    return round(
-        path.stat().st_size / 1024,
-        2
-    )
+def read_file(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
 
 
-def read_file(path: Path):
+def validate_required_directories():
 
-    return path.read_text(
-        encoding="utf-8"
-    )
+    required = [
+        MODULES_DIR,
+        PROFILES_DIR,
+        PROMPTS_DIR,
+    ]
 
+    for directory in required:
 
-def fail(message):
-
-    print(f"[FAIL] {message}")
-    sys.exit(1)
-
-
-def warn(message):
-
-    print(f"[WARN] {message}")
-
-
-def info(message):
-
-    print(f"[INFO] {message}")
-
-
-def validate_prompt_size(prompt_path):
-
-    size = calculate_size_kb(prompt_path)
-
-    if size > MAX_PROMPT_SIZE_KB:
-
-        fail(
-            f"{prompt_path.name} "
-            f"is too large: {size} KB"
-        )
-
-    info(
-        f"{prompt_path.name} size OK "
-        f"({size} KB)"
-    )
-
-
-def validate_governance(prompt_path):
-
-    content = read_file(prompt_path)
-
-    for marker in REQUIRED_GOVERNANCE_MARKERS:
-
-        if marker not in content:
-
-            fail(
-                f"{prompt_path.name} "
-                f"missing governance marker: "
-                f"{marker}"
-            )
-
-    info(
-        f"{prompt_path.name} governance OK"
-    )
-
-
-def validate_no_module_leakage(prompt_path):
-
-    content = read_file(prompt_path)
-
-    for pattern in FORBIDDEN_MODULE_PATTERNS:
-
-        if re.search(pattern, content):
-
-            warn(
-                f"{prompt_path.name} "
-                f"still references module paths"
+        if not directory.exists():
+            FAILURES.append(
+                f"Missing required directory: {directory}"
             )
 
 
-def validate_checksum(prompt_path):
+def validate_profile_references(profile_path: Path):
+
+    content = read_file(profile_path)
+
+    references = PROMPT_REFERENCE_PATTERN.findall(content)
+
+    if not references:
+        FAILURES.append(
+            f"No prompt references found in profile: {profile_path.name}"
+        )
+
+    seen = set()
+
+    for reference in references:
+
+        if reference in seen:
+            FAILURES.append(
+                f"Duplicate prompt reference '{reference}' in {profile_path.name}"
+            )
+
+        seen.add(reference)
+
+        prompt_path = PROMPTS_DIR / reference
+
+        if not prompt_path.exists():
+            FAILURES.append(
+                f"Missing referenced prompt '{reference}' in {profile_path.name}"
+            )
+
+
+def validate_profile_command(profile_path: Path):
+
+    content = read_file(profile_path)
+
+    match = PROFILE_COMMAND_PATTERN.search(content)
+
+    if not match:
+        FAILURES.append(
+            f"Missing profile command in: {profile_path.name}"
+        )
+        return
+
+    command_name = match.group(1)
+
+    expected_prompt = PROMPTS_DIR / f"{command_name}.prompt.md"
+
+    if not expected_prompt.exists():
+        FAILURES.append(
+            f"Generated runtime prompt missing for command '/{command_name}'"
+        )
+
+
+def validate_generated_prompt(prompt_path: Path):
 
     content = read_file(prompt_path)
 
-    if "PROFILE CHECKSUM:" not in content:
+    if "<profile>" not in content:
+        WARNINGS.append(
+            f"Generated prompt may not contain profile wrapper: {prompt_path.name}"
+        )
 
-        warn(
-            f"{prompt_path.name} "
-            f"missing checksum"
+    if "<!-- GENERATED" not in content:
+        WARNINGS.append(
+            f"Generated marker missing in: {prompt_path.name}"
+        )
+
+    recursive_refs = PROMPT_REFERENCE_PATTERN.findall(content)
+
+    if recursive_refs:
+        FAILURES.append(
+            f"Recursive prompt references detected in generated prompt: {prompt_path.name}"
         )
 
 
-def validate_duplicate_sections(prompt_path):
+def validate_modules():
 
-    content = read_file(prompt_path)
+    modules = list(MODULES_DIR.glob("*.prompt.md"))
 
-    sections = re.findall(
-        r"<([a-zA-Z0-9\-_]+)>",
-        content
-    )
+    if not modules:
+        FAILURES.append("No modules found")
 
-    duplicates = set([
-        x for x in sections
-        if sections.count(x) > 1
-    ])
+    for module in modules:
 
-    if duplicates:
+        content = read_file(module)
 
-        warn(
-            f"{prompt_path.name} "
-            f"duplicate XML sections: "
-            f"{sorted(duplicates)}"
-        )
+        if "<module>" not in content:
+            WARNINGS.append(
+                f"Missing <module> wrapper in {module.name}"
+            )
 
 
-def validate_prompt(prompt_path):
+def validate_profiles():
 
-    print(
-        f"\n[VALIDATING] "
-        f"{prompt_path.name}"
-    )
+    profiles = list(PROFILES_DIR.glob("*.profile.md"))
 
-    validate_prompt_size(
-        prompt_path
-    )
+    if not profiles:
+        FAILURES.append("No profiles found")
 
-    validate_governance(
-        prompt_path
-    )
+    for profile in profiles:
 
-    validate_no_module_leakage(
-        prompt_path
-    )
-
-    validate_checksum(
-        prompt_path
-    )
-
-    validate_duplicate_sections(
-        prompt_path
-    )
+        validate_profile_references(profile)
+        validate_profile_command(profile)
 
 
-def validate_runtime_prompts():
+def validate_generated_prompts():
 
-    prompts = sorted(
-        PROMPTS_DIR.glob(
-            f"*{PROMPT_EXTENSION}"
-        )
-    )
+    generated_prompts = [
+        p for p in PROMPTS_DIR.glob("*.prompt.md")
+        if p.name != "README.md"
+    ]
 
-    if not prompts:
+    if not generated_prompts:
+        FAILURES.append("No generated runtime prompts found")
 
-        fail(
-            "No runtime prompts found"
-        )
+    for prompt in generated_prompts:
+        validate_generated_prompt(prompt)
 
-    info(
-        f"Found {len(prompts)} runtime prompts"
-    )
 
-    for prompt in prompts:
+def print_results():
 
-        validate_prompt(prompt)
+    if WARNINGS:
+
+        print("\nWARNINGS:\n")
+
+        for warning in WARNINGS:
+            print(f"[WARNING] {warning}")
+
+    if FAILURES:
+
+        print("\nVALIDATION FAILED:\n")
+
+        for failure in FAILURES:
+            print(f"[ERROR] {failure}")
+
+        sys.exit(1)
+
+    print("\nValidation successful.\n")
 
 
 if __name__ == "__main__":
 
-    validate_runtime_prompts()
+    validate_required_directories()
 
-    print(
-        "\n[SUCCESS] "
-        "All generated prompts validated."
-    )
+    validate_modules()
+    validate_profiles()
+    validate_generated_prompts()
+
+    print_results()
