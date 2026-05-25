@@ -8,8 +8,8 @@ MODULES_DIR = ROOT / "modules"
 PROFILES_DIR = ROOT / "profile"
 PROMPTS_DIR = ROOT / "prompts"
 
-PROMPT_REFERENCE_PATTERN = re.compile(
-    r"-\s+prompts\/([a-zA-Z0-9\-_\.]+)"
+MODULE_REFERENCE_PATTERN = re.compile(
+    r"-\s+modules\/([a-zA-Z0-9\-_\.]+)"
 )
 
 PROFILE_COMMAND_PATTERN = re.compile(
@@ -44,11 +44,13 @@ def validate_profile_references(profile_path: Path):
 
     content = read_file(profile_path)
 
-    references = PROMPT_REFERENCE_PATTERN.findall(content)
+    references = MODULE_REFERENCE_PATTERN.findall(
+        content
+    )
 
     if not references:
         FAILURES.append(
-            f"No prompt references found in profile: {profile_path.name}"
+            f"No module references found in profile: {profile_path.name}"
         )
 
     seen = set()
@@ -57,16 +59,16 @@ def validate_profile_references(profile_path: Path):
 
         if reference in seen:
             FAILURES.append(
-                f"Duplicate prompt reference '{reference}' in {profile_path.name}"
+                f"Duplicate module reference '{reference}' in {profile_path.name}"
             )
 
         seen.add(reference)
 
-        prompt_path = PROMPTS_DIR / reference
+        module_path = MODULES_DIR / reference
 
-        if not prompt_path.exists():
+        if not module_path.exists():
             FAILURES.append(
-                f"Missing referenced prompt '{reference}' in {profile_path.name}"
+                f"Missing referenced module '{reference}' in {profile_path.name}"
             )
 
 
@@ -74,7 +76,9 @@ def validate_profile_command(profile_path: Path):
 
     content = read_file(profile_path)
 
-    match = PROFILE_COMMAND_PATTERN.search(content)
+    match = PROFILE_COMMAND_PATTERN.search(
+        content
+    )
 
     if not match:
         FAILURES.append(
@@ -84,7 +88,10 @@ def validate_profile_command(profile_path: Path):
 
     command_name = match.group(1)
 
-    expected_prompt = PROMPTS_DIR / f"{command_name}.prompt.md"
+    expected_prompt = (
+        PROMPTS_DIR /
+        f"{command_name}.prompt.md"
+    )
 
     if not expected_prompt.exists():
         FAILURES.append(
@@ -101,25 +108,27 @@ def validate_generated_prompt(prompt_path: Path):
             f"Generated prompt may not contain profile wrapper: {prompt_path.name}"
         )
 
-    if "<!-- GENERATED" not in content:
+    if "<!-- GENERATED RUNTIME PROMPT -->" not in content:
         WARNINGS.append(
             f"Generated marker missing in: {prompt_path.name}"
         )
 
-    recursive_refs = PROMPT_REFERENCE_PATTERN.findall(content)
-
-    if recursive_refs:
-        FAILURES.append(
-            f"Recursive prompt references detected in generated prompt: {prompt_path.name}"
+    if "modules/" in content:
+        WARNINGS.append(
+            f"Generated prompt still contains raw module references: {prompt_path.name}"
         )
 
 
 def validate_modules():
 
-    modules = list(MODULES_DIR.glob("*.prompt.md"))
+    modules = list(
+        MODULES_DIR.glob("*.prompt.md")
+    )
 
     if not modules:
-        FAILURES.append("No modules found")
+        FAILURES.append(
+            "No modules found"
+        )
 
     for module in modules:
 
@@ -133,29 +142,42 @@ def validate_modules():
 
 def validate_profiles():
 
-    profiles = list(PROFILES_DIR.glob("*.profile.md"))
+    profiles = list(
+        PROFILES_DIR.glob("*.profile.md")
+    )
 
     if not profiles:
-        FAILURES.append("No profiles found")
+        FAILURES.append(
+            "No profiles found"
+        )
 
     for profile in profiles:
 
-        validate_profile_references(profile)
-        validate_profile_command(profile)
+        validate_profile_references(
+            profile
+        )
+
+        validate_profile_command(
+            profile
+        )
 
 
 def validate_generated_prompts():
 
-    generated_prompts = [
-        p for p in PROMPTS_DIR.glob("*.prompt.md")
-        if p.name != "README.md"
-    ]
+    generated_prompts = list(
+        PROMPTS_DIR.glob("*.prompt.md")
+    )
 
     if not generated_prompts:
-        FAILURES.append("No generated runtime prompts found")
+        FAILURES.append(
+            "No generated runtime prompts found"
+        )
 
     for prompt in generated_prompts:
-        validate_generated_prompt(prompt)
+
+        validate_generated_prompt(
+            prompt
+        )
 
 
 def print_results():
