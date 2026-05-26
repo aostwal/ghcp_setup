@@ -185,6 +185,50 @@
 
 </testingAndValidation>
 
+<delegationModel>
+
+GitLab CI is responsible for:
+
+- pipeline orchestration
+- stage coordination
+- job dependencies
+- caching strategy
+- artifact strategy
+- runner orchestration
+- environment promotion
+- CI workflow governance
+
+GitLab CI should delegate execution behavior to specialized runtime modules:
+
+- shell-platform.prompt.md
+  - Bash execution
+  - Linux scripting
+  - kubectl shell automation
+  - jq/yq processing
+
+- powershell-platform.prompt.md
+  - PowerShell execution
+  - Azure PowerShell workflows
+  - Windows/Linux pwsh execution
+
+- python-platform.prompt.md
+  - complex operational automation
+  - SDK integrations
+  - reusable tooling
+  - API orchestration
+  - advanced runtime logic
+
+Avoid embedding massive inline scripts directly inside GitLab YAML.
+
+Prefer:
+
+- reusable scripts
+- reusable tooling
+- deterministic runtime execution
+- modular execution layers
+
+</delegationModel>
+
 <gitlabCiAntiPatterns>
 
     Avoid:
