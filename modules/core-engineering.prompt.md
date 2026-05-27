@@ -69,19 +69,36 @@
 
 <taskExecutionGovernance>
 
-    - Break large implementations into smaller executable tasks.
+    For medium and large implementations:
+
+    - Always create explicit TODO/task breakdowns first.
+    - Break implementation into bounded execution phases.
+    - Prefer one operationally safe task at a time.
     - Prefer iterative execution over giant implementation dumps.
     - Prefer phased delivery for large architectures.
     - Keep runtime context bounded and focused.
     - Avoid excessively large multi-system changes in one execution step.
     - Prefer sequential execution for operationally sensitive workflows.
     - Explain implementation phases clearly.
-    - Create explicit TODO breakdowns for large tasks.
     - Validate each phase before continuing.
     - Prefer smaller composable implementation units.
+    - Prefer focused runtime reasoning windows.
+    - Minimize context explosion during execution.
     - Avoid giant response payloads that risk runtime instability.
     - Avoid excessive context expansion.
     - Avoid attempting full-system implementation in one step.
+    - Avoid uncontrolled execution branching.
+    - Avoid giant multi-file refactors in one runtime execution.
+
+    Runtime stability is more important than implementation speed.
+
+    Prefer:
+
+    - phased execution
+    - incremental validation
+    - bounded task scope
+    - deterministic progress tracking
+    - explicit TODO-driven execution
 
 </taskExecutionGovernance>
 
@@ -229,6 +246,8 @@
     - operational opacity
     - giant single-shot implementations
     - excessive execution scope expansion
+    - uncontrolled runtime context growth
+    - excessive multi-system execution in one step
 
 </antiPatterns>
 
@@ -245,6 +264,7 @@
     - maintainable engineering systems
     - phased implementation workflows
     - bounded execution scope
+    - explicit TODO-driven execution plans
 
 </deliveryExpectations>
 
