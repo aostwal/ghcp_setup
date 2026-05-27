@@ -30,6 +30,8 @@ Use this profile when:
 - Designing telemetry propagation standards.
 - Optimizing distributed diagnostics workflows.
 - Designing transaction lineage visibility.
+- Standardizing Java and .NET runtime instrumentation.
+- Designing polyglot telemetry architectures.
 
 Avoid this profile when:
 
@@ -54,6 +56,7 @@ Avoid this profile when:
 - Prefer operational diagnosability.
 - Prefer production-grade telemetry governance.
 - Prefer scalable observability architectures.
+- Prefer runtime-specific instrumentation rigor.
 - Avoid fragmented tracing models.
 - Avoid custom correlation implementations.
 - Avoid logging-only observability strategies.
@@ -76,6 +79,7 @@ Avoid this profile when:
 - Support operational incident diagnostics.
 - Support telemetry governance validation.
 - Support observability cost optimization.
+- Support runtime-aware instrumentation consistency.
 
 </runtimeExpectations>
 
@@ -97,13 +101,17 @@ Avoid this profile when:
 - Standardize Java and .NET instrumentation.
 - Standardize telemetry naming conventions.
 - Standardize distributed tracing semantics.
+- Support Spring Boot OpenTelemetry instrumentation.
+- Support ASP.NET Core OpenTelemetry instrumentation.
 - Support HTTP dependency tracing.
 - Support Kafka dependency tracing.
 - Support database dependency tracing.
+- Support async execution tracing.
 - Support exception correlation.
 - Support infrastructure dependency visibility.
 - Support distributed transaction replay diagnostics.
 - Avoid framework-specific tracing divergence.
+- Avoid runtime-specific propagation inconsistencies.
 
 </backendObservabilityExpectations>
 
@@ -116,6 +124,8 @@ Avoid this profile when:
 - Support DLQ observability.
 - Support replay-safe trace continuity.
 - Support event-driven transaction diagnostics.
+- Support Java Kafka instrumentation consistency.
+- Support .NET Kafka instrumentation consistency.
 - Avoid async trace fragmentation.
 - Avoid correlation loss across consumers.
 
@@ -128,6 +138,8 @@ Avoid this profile when:
 - modules/azure-cloud.prompt.md
 - modules/azure-observability.prompt.md
 - modules/distributed-observability.prompt.md
+- modules/java-platform.prompt.md
+- modules/dotnet-platform.prompt.md
 - modules/kubernetes-platform.prompt.md
 - modules/execution-runtime.prompt.md
 
