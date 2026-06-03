@@ -119,6 +119,7 @@ Avoid this profile when:
 - modules/shell-platform.prompt.md
 - modules/powershell-platform.prompt.md
 - modules/execution-runtime.prompt.md
+- modules/helm-platform.prompt.md
 
 </moduleComposition>
 
