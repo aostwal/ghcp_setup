@@ -141,7 +141,6 @@ Avoid this profile when:
 - modules/java-platform.prompt.md
 - modules/dotnet-platform.prompt.md
 - modules/kubernetes-platform.prompt.md
-- modules/execution-runtime.prompt.md
 
 </moduleComposition>
 

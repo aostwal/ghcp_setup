@@ -1,6 +1,7 @@
 from pathlib import Path
 import re
 import sys
+import argparse
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -19,6 +20,14 @@ PROFILE_COMMAND_PATTERN = re.compile(
 
 def read_file(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def estimate_tokens(content: str) -> int:
+    """
+    Approximation:
+    1 token ~= 4 chars
+    """
+    return int(len(content) / 4)
 
 
 def extract_module_paths(profile_content: str):
@@ -85,7 +94,64 @@ def validate_required_directories():
         )
 
 
-def build_profile(profile_path: Path):
+def print_profile_stats(
+    profile_name,
+    module_stats,
+    total_size_bytes,
+    total_tokens
+):
+
+    print("\n")
+    print("=" * 80)
+    print(f"PROFILE: {profile_name}")
+    print("=" * 80)
+
+    print(
+        f"{'Module':45}"
+        f"{'KB':>10}"
+        f"{'Tokens':>12}"
+    )
+
+    print("-" * 80)
+
+    for stat in sorted(
+        module_stats,
+        key=lambda x: x["size_bytes"],
+        reverse=True
+    ):
+
+        print(
+            f"{stat['name']:45}"
+            f"{stat['size_kb']:>10.2f}"
+            f"{stat['tokens']:>12}"
+        )
+
+    print("-" * 80)
+
+    print(
+        f"{'TOTAL':45}"
+        f"{round(total_size_bytes/1024,2):>10.2f}"
+        f"{total_tokens:>12}"
+    )
+
+    print("\nLargest Contributors:")
+
+    for stat in sorted(
+        module_stats,
+        key=lambda x: x["size_bytes"],
+        reverse=True
+    )[:5]:
+
+        print(
+            f"  - {stat['name']} "
+            f"({stat['size_kb']} KB)"
+        )
+
+
+def build_profile(
+    profile_path: Path,
+    show_stats: bool = False
+):
 
     print(f"[INFO] Building profile: {profile_path.name}")
 
@@ -119,7 +185,46 @@ def build_profile(profile_path: Path):
 
     assembled_sections.append(profile_content)
 
+    module_stats = []
+
+    total_tokens = estimate_tokens(
+        profile_content
+    )
+
+    total_size_bytes = len(
+        profile_content.encode("utf-8")
+    )
+
     for module_path in module_paths:
+
+        module_content = read_file(
+            module_path
+        )
+
+        size_bytes = len(
+            module_content.encode("utf-8")
+        )
+
+        size_kb = round(
+            size_bytes / 1024,
+            2
+        )
+
+        tokens = estimate_tokens(
+            module_content
+        )
+
+        module_stats.append(
+            {
+                "name": module_path.name,
+                "size_bytes": size_bytes,
+                "size_kb": size_kb,
+                "tokens": tokens,
+            }
+        )
+
+        total_size_bytes += size_bytes
+        total_tokens += tokens
 
         assembled_sections.append("\n")
 
@@ -130,7 +235,7 @@ def build_profile(profile_path: Path):
         assembled_sections.append("\n")
 
         assembled_sections.append(
-            read_file(module_path)
+            module_content
         )
 
         assembled_sections.append("\n")
@@ -165,8 +270,28 @@ def build_profile(profile_path: Path):
         f"{output_name} ({size_kb} KB)"
     )
 
+    if show_stats:
 
-def build_all_profiles():
+        print_profile_stats(
+            command_name,
+            module_stats,
+            total_size_bytes,
+            total_tokens
+        )
+
+    return {
+        "profile": command_name,
+        "size_kb": round(
+            total_size_bytes / 1024,
+            2
+        ),
+        "tokens": total_tokens,
+    }
+
+
+def build_all_profiles(
+    show_stats: bool = False
+):
 
     profiles = sorted(
         PROFILES_DIR.glob("*.profile.md")
@@ -180,16 +305,63 @@ def build_all_profiles():
 
         sys.exit(1)
 
+    summary = []
+
     for profile in profiles:
-        build_profile(profile)
+
+        result = build_profile(
+            profile,
+            show_stats
+        )
+
+        summary.append(result)
 
     print(
         "\n[INFO] Runtime prompt generation complete."
     )
 
+    if show_stats:
+
+        print("\n")
+        print("=" * 80)
+        print("PROFILE SUMMARY")
+        print("=" * 80)
+
+        print(
+            f"{'Profile':40}"
+            f"{'KB':>10}"
+            f"{'Tokens':>12}"
+        )
+
+        print("-" * 80)
+
+        for item in sorted(
+            summary,
+            key=lambda x: x["tokens"],
+            reverse=True
+        ):
+
+            print(
+                f"{item['profile']:40}"
+                f"{item['size_kb']:>10.2f}"
+                f"{item['tokens']:>12}"
+            )
+
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--stats",
+        action="store_true",
+        help="Show profile size and token statistics"
+    )
+
+    args = parser.parse_args()
+
     validate_required_directories()
 
-    build_all_profiles()
+    build_all_profiles(
+        show_stats=args.stats
+    )

@@ -44,6 +44,7 @@
     - modules/azure-cloud.prompt.md
     - modules/kubernetes-platform.prompt.md
     - modules/gitlab-ci.prompt.md
+    - modules/execution-runtime.prompt.md
 
     Optional execution module:
 
