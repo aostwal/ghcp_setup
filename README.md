@@ -1,30 +1,32 @@
 # GHCP Setup
 
-Modular GitHub Copilot Prompt (GHCP) architecture for building reusable, composable, and maintainable engineering cognition systems.
+Modular GitHub Copilot Prompt (GHCP) architecture for building reusable, composable, maintainable, and cost-efficient engineering cognition systems.
 
-This repository is designed to solve major scaling problems with large Copilot instruction files:
+This repository transforms GitHub Copilot from a generic coding assistant into a specialized engineering platform by separating:
 
-- duplicated cognition
-- giant prompt files
-- weak specialization boundaries
-- difficult maintainability
-- poor runtime composition
-- token inefficiency
-- conflicting instructions
-- orchestration sprawl
-- runtime ambiguity
+* governance
+* reusable expertise
+* execution workflows
+* orchestration
+* runtime composition
 
-The architecture separates:
+into independently maintainable layers.
 
-- governance
-- specialization
-- orchestration
-- execution
-- observability
-- runtime cognition
-- validation
+---
 
-into modular reusable layers.
+# Why This Exists
+
+Large Copilot instruction files eventually become:
+
+* giant instruction dumps
+* duplicated expertise
+* conflicting guidance
+* difficult maintenance
+* poor specialization
+* excessive token consumption
+* weak scalability
+
+GHCP solves this through modular cognition composition.
 
 ---
 
@@ -36,484 +38,511 @@ into modular reusable layers.
 ├── copilot-instructions.md
 │
 ├── modules/
-│   ├── core-engineering.prompt.md
-│   ├── workflow-orchestration.prompt.md
-│   ├── kubernetes-platform.prompt.md
-│   ├── go-platform.prompt.md
-│   ├── python-platform.prompt.md
-│   ├── java-platform.prompt.md
-│   ├── dotnet-platform.prompt.md
-│   ├── shell-platform.prompt.md
-│   ├── powershell-platform.prompt.md
-│   ├── docker-platform.prompt.md
-│   ├── terraform-devops.prompt.md
-│   ├── frontend-platform.prompt.md
-│   ├── azure-cloud.prompt.md
-│   ├── azure-observability.prompt.md
-│   ├── distributed-observability.prompt.md
-│   ├── gitlab-ci.prompt.md
-│   └── execution-runtime.prompt.md
 │
 ├── profile/
-│   ├── aks-observability-engineer.profile.md
-│   ├── kubectl-plugin-architect.profile.md
-│   ├── terraform-aks-platform.profile.md
-│   ├── frontend-azure-platform.profile.md
-│   ├── python-docker-azure.profile.md
-│   ├── devops-runtime-engineer.profile.md
-│   └── distributed-observability-architect.profile.md
 │
 ├── prompts/
-│   ├── aks-observability-engineer.prompt.md
-│   ├── kubectl-plugin-architect.prompt.md
-│   ├── terraform-aks-platform.prompt.md
-│   ├── frontend-azure-platform.prompt.md
-│   ├── python-docker-azure.prompt.md
-│   ├── devops-runtime-engineer.prompt.md
-│   └── distributed-observability-architect.prompt.md
 │
 ├── hooks/
-│   └── validate-generated-prompts.py
 │
 ├── tools/
-│   └── profile-builder.py
 │
 └── skills/
 ```
 
 ---
 
-# Core Architecture Principles
-
-## 1. Modules = Reusable Cognition
-
-Modules contain reusable engineering expertise.
-
-Examples:
-
-- Kubernetes cognition
-- Terraform cognition
-- Azure governance cognition
-- frontend architecture cognition
-- Docker runtime cognition
-- distributed observability cognition
-- Bash execution cognition
-- PowerShell execution cognition
-- Java runtime instrumentation cognition
-- .NET runtime instrumentation cognition
-- workflow orchestration cognition
-
-Modules should:
-
-- be reusable
-- avoid orchestration logic
-- avoid profile-specific instructions
-- avoid runtime activation behavior
-- remain domain focused
-- define clear cognition boundaries
-- specialize deeply in one domain
-
-Modules should NOT:
-
-- behave like personas
-- duplicate governance
-- own orchestration
-- contain unrelated expertise
-- collapse multiple runtime concerns together
-
----
-
-## 2. Profiles = Orchestration Layers
-
-Profiles assemble cognition modules.
-
-Profiles define:
-
-- mission
-- execution mode
-- module composition
-- runtime activation guidance
-- output expectations
-- orchestration behavior
-
-Profiles should remain lightweight.
-
-Profiles should NOT duplicate module cognition.
-
-Correct responsibility:
+# Core Architecture
 
 ```text
-modules = expertise
-profiles = orchestration
-generated prompts = runtime artifacts
+Governance
+        ↓
+Modules
+        ↓
+Profiles
+        ↓
+Builder
+        ↓
+Runtime Prompts
+        ↓
+GitHub Copilot Chat
 ```
 
 ---
 
-## 3. Generated Prompts = Runtime Artifacts
+# Repository Structure
 
-Generated prompts are final runtime-ready prompts consumed by GitHub Copilot Chat.
+## Global Governance
 
-These files are automatically generated from:
+```text
+copilot-instructions.md
+```
 
-- profile definitions
-- module composition
-- reusable cognition layers
+Repository-wide engineering governance.
 
-Generated prompts should NEVER be manually edited.
+Responsibilities:
+
+* architectural integrity
+* engineering standards
+* execution discipline
+* maintainability
+* operational quality
+* context budget governance
+
+This file intentionally avoids deep specialization.
+
+---
+
+## Modules
+
+Reusable engineering expertise.
+
+Location:
+
+```text
+modules/
+```
+
+Current modules:
+
+```text
+core-engineering.prompt.md
+workflow-orchestration.prompt.md
+execution-governance.prompt.md
+execution-runtime.prompt.md
+
+azure-cloud.prompt.md
+azure-observability.prompt.md
+distributed-observability.prompt.md
+runtime-observability.prompt.md
+
+kubernetes-platform.prompt.md
+helm-platform.prompt.md
+terraform-devops.prompt.md
+docker-platform.prompt.md
+
+gitlab-ci.prompt.md
+
+go-platform.prompt.md
+python-platform.prompt.md
+java-platform.prompt.md
+dotnet-platform.prompt.md
+
+frontend-platform.prompt.md
+
+shell-platform.prompt.md
+powershell-platform.prompt.md
+
+prompt-architecture.prompt.md
+```
+
+Modules contain:
+
+* reusable cognition
+* domain expertise
+* platform knowledge
+* engineering standards
+
+Modules do NOT contain:
+
+* personas
+* orchestration logic
+* profile-specific behavior
+
+---
+
+## Profiles
+
+Profiles orchestrate modules.
+
+Location:
+
+```text
+profile/
+```
+
+Profiles define:
+
+* mission
+* specialization
+* module composition
+* runtime activation guidance
+
+Examples:
+
+```text
+aks-observability-engineer
+distributed-observability-architect
+terraform-aks-platform
+kubectl-plugin-architect
+devops-runtime-engineer
+python-docker-azure
+frontend-azure-platform
+```
+
+Rule:
+
+```text
+modules = expertise
+
+profiles = orchestration
+```
+
+---
+
+## Runtime Prompts
+
+Location:
+
+```text
+prompts/
+```
+
+Generated artifacts.
+
+Never edit manually.
+
+Generated by:
+
+```text
+tools/profile-builder.py
+```
+
+Runtime prompts are consumed directly by GitHub Copilot Chat.
+
+Example:
+
+```text
+/terraform-aks-platform
+
+/distributed-observability-architect
+
+/kubectl-plugin-architect
+```
 
 ---
 
 # Prompt Build Flow
 
 ```text
-modules
-    ↓
-profiles
-    ↓
-profile-builder.py
-    ↓
-flattened runtime prompts
-    ↓
-GitHub Copilot Chat
+Modules
+        ↓
+Profiles
+        ↓
+Profile Builder
+        ↓
+Generated Runtime Prompts
+        ↓
+GitHub Copilot
 ```
 
 ---
 
-# Why This Architecture Is More Effective
+# Profile Builder
 
-Traditional GHCP repositories eventually become:
-
-- giant instruction dumps
-- duplicated expertise layers
-- conflicting runtime behaviors
-- token-heavy prompts
-- noisy cognition activation
-- weak specialization boundaries
-- impossible-to-maintain prompt systems
-
-This architecture avoids those problems through modular cognition composition.
-
----
-
-# How This Architecture Saves Tokens
-
-## Traditional Prompt Problem
-
-In most Copilot repositories:
-
-- every persona duplicates infrastructure knowledge
-- every prompt duplicates Kubernetes guidance
-- every profile duplicates CI/CD behavior
-- every runtime repeats execution governance
-- observability logic gets repeated everywhere
-
-This creates:
-
-- massive prompt expansion
-- unnecessary token usage
-- noisy runtime cognition
-- conflicting instructions
-- weak reasoning quality
-
----
-
-## Modular Cognition Approach
-
-Instead of duplicating knowledge:
+Location:
 
 ```text
-profile
-    ↓
-references reusable modules
-    ↓
-builder composes only required cognition
+tools/profile-builder.py
 ```
 
-This means:
+Responsibilities:
 
-- Kubernetes cognition exists once.
-- GitLab CI cognition exists once.
-- Bash runtime cognition exists once.
-- PowerShell runtime cognition exists once.
-- distributed tracing cognition exists once.
-- Java instrumentation cognition exists once.
-- .NET instrumentation cognition exists once.
+* discover profiles
+* resolve module references
+* validate dependencies
+* generate runtime prompts
+* produce deterministic output
+* analyze profile size
+* estimate token consumption
 
-This dramatically reduces:
-
-- duplicated runtime instructions
-- repeated governance layers
-- orchestration conflicts
-- unnecessary token expansion
-
----
-
-# Why Token Reduction Matters
-
-Lower token usage improves:
-
-- runtime reasoning quality
-- instruction clarity
-- specialization accuracy
-- response consistency
-- context efficiency
-- maintainability
-- scalability of cognition systems
-
-Smaller focused cognition layers produce:
-
-- cleaner runtime signal quality
-- stronger specialization behavior
-- better operational reasoning
-- less hallucinated orchestration
-- fewer conflicting instructions
-
----
-
-# Example Cognition Separation
-
-Instead of creating one giant:
-
-```text
-enterprise-devops-observability.prompt.md
-```
-
-This architecture separates:
-
-| Concern | Module |
-|---|---|
-| Kubernetes runtime | kubernetes-platform |
-| GitLab orchestration | gitlab-ci |
-| Bash execution | shell-platform |
-| PowerShell execution | powershell-platform |
-| Azure governance | azure-cloud |
-| distributed tracing | distributed-observability |
-| Java instrumentation | java-platform |
-| .NET instrumentation | dotnet-platform |
-| execution rigor | execution-runtime |
-
-This keeps cognition:
-
-- modular
-- composable
-- reusable
-- maintainable
-- operationally deterministic
-
----
-
-# Distributed Observability Architecture Support
-
-This repository now supports enterprise distributed observability architectures involving:
-
-- React frontends
-- Java backends
-- .NET backends
-- Kafka messaging systems
-- Azure Application Insights
-- OpenTelemetry
-- AKS workloads
-- distributed transaction tracing
-- async trace propagation
-- telemetry governance
-- KQL-driven diagnostics
-
-Supported observability concepts include:
-
-- W3C TraceContext
-- traceparent propagation
-- tracestate propagation
-- baggage propagation
-- Kafka header propagation
-- distributed transaction lineage
-- async transaction tracing
-- service dependency maps
-- Application Insights transaction maps
-- telemetry governance standards
-
----
-
-# How To Generate Prompts
-
-## Step 1
-
-Place reusable cognition modules under:
-
-```text
-modules/
-```
-
-Example:
-
-```text
-modules/kubernetes-platform.prompt.md
-```
-
----
-
-## Step 2
-
-Create orchestration profiles under:
-
-```text
-profile/
-```
-
-Example:
-
-```text
-profile/distributed-observability-architect.profile.md
-```
-
-Profile example:
-
-```xml
-<moduleComposition>
-
-- modules/core-engineering.prompt.md
-- modules/distributed-observability.prompt.md
-- modules/java-platform.prompt.md
-- modules/dotnet-platform.prompt.md
-- modules/azure-observability.prompt.md
-
-</moduleComposition>
-```
-
----
-
-## Step 3
-
-Run the builder:
+Generate prompts:
 
 ```bash
 python tools/profile-builder.py
 ```
 
-The builder will:
+Generate prompts with statistics:
 
-- read profiles
-- resolve module references
-- flatten reusable cognition
-- generate runtime prompts
-- prevent missing references
-- produce deterministic runtime artifacts
+```bash
+python tools/profile-builder.py --stats
+```
+
+---
+
+# Token Analysis
+
+The builder can report:
+
+* profile size
+* module size
+* estimated token count
+* largest contributors
+
+Example:
+
+```text
+Profile: devops-runtime-engineer
+
+core-engineering............. 1800 tokens
+azure-cloud.................. 1700 tokens
+gitlab-ci.................... 1600 tokens
+
+Total........................ 18000 tokens
+```
+
+This enables targeted optimization.
 
 ---
 
 # Validation Hooks
 
-Validation hooks help prevent:
-
-- broken module references
-- stale runtime prompts
-- recursive prompt inclusion
-- duplicated module references
-- invalid orchestration
-- broken runtime composition
-- architecture drift
-
-Main validation hook:
+Location:
 
 ```text
-hooks/validate-generated-prompts.py
+hooks/
 ```
 
-Recommended workflow:
+Example:
+
+```text
+validate-generated-prompts.py
+```
+
+Responsibilities:
+
+* validate module references
+* validate profile composition
+* detect missing dependencies
+* prevent broken prompt generation
+* enforce architecture conventions
+
+Run:
 
 ```bash
-python tools/profile-builder.py
 python hooks/validate-generated-prompts.py
 ```
 
 ---
 
-# Runtime Cognition Separation
+# Skills
 
-This architecture intentionally separates:
-
-| Layer | Responsibility |
-|---|---|
-| modules | reusable expertise |
-| profiles | orchestration |
-| prompts | runtime artifacts |
-| hooks | architecture validation |
-| builder | cognition compilation |
-
-This separation is critical for:
-
-- maintainability
-- token efficiency
-- runtime correctness
-- specialization clarity
-- scalable cognition evolution
-
----
-
-# Recommended Usage Pattern
-
-Use generated prompts directly inside GitHub Copilot Chat:
+Location:
 
 ```text
-/kubectl-plugin-architect
-/terraform-aks-platform
-/aks-observability-engineer
-/frontend-azure-platform
-/python-docker-azure
-/devops-runtime-engineer
-/distributed-observability-architect
+skills/
 ```
 
-These prompts dynamically inherit reusable cognition through profile composition.
+Skills are optional operational accelerators.
+
+Use skills when:
+
+* expertise is highly task-specific
+* cognition should not be loaded constantly
+* runtime activation is preferable
+
+Examples:
+
+```text
+shell automation
+powershell automation
+gitlab pipeline operations
+```
+
+Modules remain the primary architecture mechanism.
 
 ---
 
-# Important Design Rules
+# Observability Architecture
 
-## DO
+The repository supports advanced observability engineering through:
 
-- keep modules reusable
-- keep profiles lightweight
-- inject execution cognition selectively
-- compose specialization intentionally
-- validate generated prompts continuously
-- regenerate runtime prompts after profile changes
-- preserve cognition boundaries
-- keep orchestration separated from execution
-- keep distributed tracing governance centralized
+```text
+azure-observability
+distributed-observability
+runtime-observability
+```
+
+Supported domains:
+
+* Application Insights
+* Azure Monitor
+* KQL
+* Azure Workbooks
+* OpenTelemetry
+* distributed tracing
+* Kafka tracing
+* Java instrumentation
+* .NET instrumentation
+* frontend telemetry
+* AKS observability
 
 ---
 
-## DO NOT
+# Platform Engineering Support
 
-- manually edit generated prompts
-- duplicate cognition across profiles
-- create giant megaprofiles
-- place orchestration logic inside modules
-- mix unrelated expertise domains together
-- collapse runtime layers together
-- create recursive prompt references
-- merge CI orchestration with runtime scripting
-- merge distributed tracing with logging-only cognition
+Supported platform domains:
+
+```text
+Azure
+AKS
+Terraform
+Helm
+Docker
+GitLab CI
+Go
+Python
+Java
+.NET
+React
+TypeScript
+Shell
+PowerShell
+```
+
+---
+
+# AI Credit Optimization Strategy
+
+GitHub Copilot now operates under AI credit consumption models.
+
+To reduce unnecessary credit usage:
+
+### Prefer Modular Cognition
+
+Load only required expertise.
+
+Avoid giant megaprofiles.
+
+---
+
+### Prefer Specialized Profiles
+
+Instead of:
+
+```text
+one profile for everything
+```
+
+Prefer:
+
+```text
+focused profiles
+```
+
+for specific workloads.
+
+---
+
+### Monitor Prompt Size
+
+Use:
+
+```bash
+python tools/profile-builder.py --stats
+```
+
+to identify expensive modules and profiles.
+
+---
+
+### Use Context Budget Governance
+
+Optimize for:
+
+* minimum required cognition
+* focused execution
+* progressive specialization
+* bounded context expansion
+
+---
+
+# Recommended Workflow
+
+## Add New Expertise
+
+Create:
+
+```text
+modules/new-domain.prompt.md
+```
+
+---
+
+## Add New Specialization
+
+Create:
+
+```text
+profile/new-specialization.profile.md
+```
+
+---
+
+## Generate Prompts
+
+```bash
+python tools/profile-builder.py
+```
+
+---
+
+## Validate
+
+```bash
+python hooks/validate-generated-prompts.py
+```
+
+---
+
+## Commit
+
+Commit only:
+
+* modules
+* profiles
+* tools
+* hooks
+
+Generated prompts should be reproducible artifacts.
+
+---
+
+# Design Principles
+
+DO:
+
+* keep modules reusable
+* keep profiles lightweight
+* specialize intentionally
+* monitor token growth
+* validate continuously
+* optimize for maintainability
+
+DO NOT:
+
+* create giant megaprofiles
+* duplicate cognition
+* manually edit generated prompts
+* mix unrelated expertise
+* introduce recursive composition
+* ignore token consumption
 
 ---
 
 # Repository Goal
 
-The goal of this repository is NOT to build:
+The goal is not to build:
 
-- giant prompts
-- persona sprawl
-- instruction duplication
-- orchestration chaos
-- runtime ambiguity
+* giant prompts
+* persona sprawl
+* instruction duplication
 
 The goal is to build:
 
-- modular cognition
-- reusable engineering expertise
-- scalable orchestration
-- maintainable runtime composition
-- deterministic cognition compilation
-- enterprise-grade Copilot engineering systems
-- operationally scalable AI engineering workflows
+* modular cognition
+* reusable engineering expertise
+* scalable orchestration
+* maintainable prompt systems
+* cost-efficient Copilot workflows
+* production-grade engineering intelligence

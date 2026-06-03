@@ -40,6 +40,22 @@ Runtime execution artifacts belong inside:
 
 </governanceIdentity>
 
+<contextBudgetGovernance>
+
+Prefer minimum required cognition.
+
+Avoid unnecessary specialization activation.
+
+Prefer focused implementation plans.
+
+Avoid giant response payloads.
+
+Escalate complexity progressively.
+
+Prefer bounded execution context.
+
+</contextBudgetGovernance>
+
 <repositoryArchitecture>
 
     Repository hierarchy:

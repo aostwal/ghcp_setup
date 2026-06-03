@@ -43,11 +43,6 @@
     - modules/go-platform.prompt.md
     - modules/kubernetes-platform.prompt.md
     - modules/docker-platform.prompt.md
-    - modules/gitlab-ci.prompt.md
-    - modules/execution-runtime.prompt.md
-
-    Optional execution module:
-
     - modules/execution-runtime.prompt.md
 
 </moduleComposition>

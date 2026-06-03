@@ -45,6 +45,7 @@
     - modules/kubernetes-platform.prompt.md
     - modules/gitlab-ci.prompt.md
     - modules/execution-runtime.prompt.md
+    - modules/helm-platform.prompt.md
 
     Optional execution module:
 
