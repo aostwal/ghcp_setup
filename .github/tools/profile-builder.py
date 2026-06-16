@@ -3,6 +3,11 @@ import re
 import sys
 import argparse
 
+try:
+    import tiktoken
+except ImportError:
+    tiktoken = None
+
 ROOT = Path(__file__).resolve().parent.parent
 
 MODULES_DIR = ROOT / "modules"
@@ -28,6 +33,28 @@ def estimate_tokens(content: str) -> int:
     1 token ~= 4 chars
     """
     return int(len(content) / 4)
+
+
+def get_token_counter(accurate: bool = False):
+
+    if not accurate:
+        return estimate_tokens, "estimated"
+
+    if tiktoken is None:
+        print(
+            "[WARNING] --accurate requested but tiktoken is not installed; "
+            "using estimated token counts."
+        )
+        return estimate_tokens, "estimated"
+
+    encoding = tiktoken.get_encoding("cl100k_base")
+
+    def count_tokens(content: str) -> int:
+        return len(
+            encoding.encode(content)
+        )
+
+    return count_tokens, "accurate"
 
 
 def extract_module_paths(profile_content: str):
@@ -98,12 +125,14 @@ def print_profile_stats(
     profile_name,
     module_stats,
     total_size_bytes,
-    total_tokens
+    total_tokens,
+    token_mode
 ):
 
     print("\n")
     print("=" * 80)
     print(f"PROFILE: {profile_name}")
+    print(f"TOKEN MODE: {token_mode}")
     print("=" * 80)
 
     print(
@@ -150,7 +179,8 @@ def print_profile_stats(
 
 def build_profile(
     profile_path: Path,
-    show_stats: bool = False
+    show_stats: bool = False,
+    accurate_tokens: bool = False
 ):
 
     print(f"[INFO] Building profile: {profile_path.name}")
@@ -166,6 +196,10 @@ def build_profile(
     )
 
     validate_module_exists(module_paths)
+
+    count_tokens, token_mode = get_token_counter(
+        accurate_tokens
+    )
 
     assembled_sections = []
 
@@ -187,7 +221,7 @@ def build_profile(
 
     module_stats = []
 
-    total_tokens = estimate_tokens(
+    total_tokens = count_tokens(
         profile_content
     )
 
@@ -210,7 +244,7 @@ def build_profile(
             2
         )
 
-        tokens = estimate_tokens(
+        tokens = count_tokens(
             module_content
         )
 
@@ -276,7 +310,8 @@ def build_profile(
             command_name,
             module_stats,
             total_size_bytes,
-            total_tokens
+            total_tokens,
+            token_mode
         )
 
     return {
@@ -286,11 +321,13 @@ def build_profile(
             2
         ),
         "tokens": total_tokens,
+        "token_mode": token_mode,
     }
 
 
 def build_all_profiles(
-    show_stats: bool = False
+    show_stats: bool = False,
+    accurate_tokens: bool = False
 ):
 
     profiles = sorted(
@@ -311,7 +348,8 @@ def build_all_profiles(
 
         result = build_profile(
             profile,
-            show_stats
+            show_stats,
+            accurate_tokens
         )
 
         summary.append(result)
@@ -326,6 +364,14 @@ def build_all_profiles(
         print("=" * 80)
         print("PROFILE SUMMARY")
         print("=" * 80)
+
+        token_modes = sorted(
+            set(item["token_mode"] for item in summary)
+        )
+
+        print(
+            "TOKEN MODE: " + ", ".join(token_modes)
+        )
 
         print(
             f"{'Profile':40}"
@@ -358,10 +404,17 @@ if __name__ == "__main__":
         help="Show profile size and token statistics"
     )
 
+    parser.add_argument(
+        "--accurate",
+        action="store_true",
+        help="Use tiktoken for accurate GPT token counts when available"
+    )
+
     args = parser.parse_args()
 
     validate_required_directories()
 
     build_all_profiles(
-        show_stats=args.stats
+        show_stats=args.stats or args.accurate,
+        accurate_tokens=args.accurate
     )

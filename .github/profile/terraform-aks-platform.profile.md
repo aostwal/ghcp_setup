@@ -47,10 +47,6 @@
     - modules/execution-runtime.prompt.md
     - modules/helm-platform.prompt.md
 
-    Optional execution module:
-
-    - modules/execution-runtime.prompt.md
-
 </moduleComposition>
 
 <runtimeActivationGuidance>

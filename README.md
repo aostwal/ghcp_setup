@@ -190,6 +190,28 @@ profiles = orchestration
 
 ---
 
+## Profiles vs Modules vs Skills
+
+GHCP separates cognition by loading frequency and responsibility:
+
+```text
+modules = reusable expertise
+
+profiles = runtime orchestration
+
+skills = on-demand task acceleration
+```
+
+Use modules for durable engineering knowledge that many profiles can reuse.
+
+Use profiles to compose the minimum required modules for a specific Copilot runtime command.
+
+Use skills for narrow operational tasks that should not be loaded into every profile.
+
+This keeps core prompts focused while still making specialized task help available when needed.
+
+---
+
 ## Runtime Prompts
 
 Location:
@@ -268,6 +290,12 @@ Generate prompts with statistics:
 python tools/profile-builder.py --stats
 ```
 
+Generate prompts with accurate token statistics when `tiktoken` is installed:
+
+```bash
+python tools/profile-builder.py --accurate
+```
+
 ---
 
 # Token Analysis
@@ -277,6 +305,7 @@ The builder can report:
 * profile size
 * module size
 * estimated token count
+* accurate GPT token count when `tiktoken` is available
 * largest contributors
 
 Example:
@@ -325,6 +354,26 @@ python hooks/validate-generated-prompts.py
 
 ---
 
+# Engineering Templates
+
+Location:
+
+```text
+templates/
+```
+
+Templates support specification driven engineering:
+
+```text
+intent-spec.md
+adr.md
+implementation-plan.md
+```
+
+Use them to define intent, record architecture decisions, and plan implementation before changing modules, profiles, tools, or hooks.
+
+---
+
 # Skills
 
 Location:
@@ -347,9 +396,28 @@ Examples:
 shell automation
 powershell automation
 gitlab pipeline operations
+python automation
+developer environment setup
 ```
 
-Modules remain the primary architecture mechanism.
+Current skills:
+
+```text
+dev-environment-platform.skill.md
+python-automation.skill.md
+shell-automation.skill.md
+gitlab-pipeline-authoring.skill.md
+```
+
+Skills are intentionally small and should stay focused on:
+
+* task acceleration
+* activation criteria
+* execution patterns
+* safety guardrails
+* credit-efficient on-demand loading
+
+Skills should not duplicate module content. If guidance is reusable domain expertise, keep it in a module. If guidance is a narrow workflow accelerator, keep it in a skill.
 
 ---
 
@@ -444,6 +512,31 @@ python tools/profile-builder.py --stats
 
 to identify expensive modules and profiles.
 
+For GPT tokenizer-aware accounting, install `tiktoken` and use:
+
+```bash
+python tools/profile-builder.py --accurate
+```
+
+Without `tiktoken`, the builder preserves the existing estimated token mode.
+
+---
+
+### Enforce Token Governance
+
+Validation includes generated prompt token governance:
+
+* warning above 15,000 tokens
+* failure above 25,000 tokens
+* accurate counts when `tiktoken` is available
+* estimated fallback for backwards compatibility
+
+Run:
+
+```bash
+python hooks/validate-generated-prompts.py
+```
+
 ---
 
 ### Use Context Budget Governance
@@ -457,6 +550,21 @@ Optimize for:
 
 ---
 
+### Load Skills On Demand
+
+Skills reduce token usage by keeping narrow task tactics outside default profiles.
+
+Use a skill when:
+
+* the task is specific and operational
+* loading a full module would be excessive
+* the guidance is needed temporarily
+* the workflow benefits from fast checklists or command patterns
+
+This avoids paying Copilot context cost for specialized instructions until the task actually needs them.
+
+---
+
 # Recommended Workflow
 
 ## Add New Expertise
@@ -466,6 +574,42 @@ Create:
 ```text
 modules/new-domain.prompt.md
 ```
+
+---
+
+## Specify Intent
+
+Start source changes from a lightweight intent specification:
+
+```text
+templates/intent-spec.md
+```
+
+Capture the problem, intent, scope, requirements, constraints, and success criteria before changing modules or profiles.
+
+---
+
+## Record Architecture Decisions
+
+For architectural changes, create an ADR from:
+
+```text
+templates/adr.md
+```
+
+Use ADRs to preserve the context, decision, consequences, alternatives, and follow-up work.
+
+---
+
+## Plan Implementation
+
+Before implementation, create a focused plan from:
+
+```text
+templates/implementation-plan.md
+```
+
+Tie the implementation plan back to the intent specification and ADR when applicable.
 
 ---
 
@@ -503,6 +647,8 @@ Commit only:
 * profiles
 * tools
 * hooks
+* templates
+* ADRs and intent specifications
 
 Generated prompts should be reproducible artifacts.
 

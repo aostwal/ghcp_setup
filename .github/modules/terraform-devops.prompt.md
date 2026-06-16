@@ -97,31 +97,21 @@
 
 <azurePlatformEngineering>
 
-    - Follow Azure naming consistency.
-    - Optimize for managed identity usage.
-    - Prefer least-privilege RBAC models.
-    - Design infrastructure for AKS compatibility.
-    - Prefer secure networking defaults.
-    - Optimize for Azure operational visibility.
-    - Design for multi-environment deployments.
-    - Prefer reusable environment patterns.
-    - Optimize for cost visibility and governance.
-    - Prefer Azure-native operational patterns.
+    - Encode Azure platform decisions as explicit Terraform resources.
+    - Keep provider configuration environment-scoped and reviewable.
+    - Represent identity, networking, and policy boundaries without redefining cloud policy.
+    - Surface Azure dependencies through clear variables and outputs.
+    - Keep Azure resource composition reproducible across environments.
 
 </azurePlatformEngineering>
 
 <aksInfrastructurePatterns>
 
-    - Design AKS infrastructure for scalability.
-    - Separate cluster and workload concerns.
-    - Optimize node pool design intentionally.
-    - Keep networking architectures maintainable.
-    - Avoid tightly coupled cluster dependencies.
-    - Design for autoscaling environments.
-    - Prefer operationally proven AKS patterns.
-    - Minimize cluster-wide infrastructure assumptions.
-    - Support observability integrations cleanly.
-    - Design for managed Kubernetes operations.
+    - Keep AKS cluster, node pool, identity, and add-on resources separately reviewable.
+    - Model node pools as intentional Terraform boundaries.
+    - Expose workload integration points through stable outputs.
+    - Avoid cluster-wide assumptions hidden inside reusable modules.
+    - Keep lifecycle behavior explicit for cluster-sensitive resources.
 
 </aksInfrastructurePatterns>
 
@@ -142,16 +132,11 @@
 
 <securityAndGovernance>
 
-    - Follow least-privilege principles.
-    - Minimize exposed infrastructure surfaces.
-    - Avoid insecure networking defaults.
-    - Protect secrets and sensitive values.
-    - Prefer managed identity over static credentials.
-    - Keep security-sensitive behavior explicit.
-    - Design infrastructure for auditability.
-    - Minimize unnecessary public exposure.
-    - Prefer secure-by-default configurations.
-    - Keep governance boundaries clear.
+    - Keep security-sensitive Terraform behavior explicit.
+    - Protect secrets and sensitive state values.
+    - Make policy assignments and RBAC changes easy to review.
+    - Keep governance boundaries visible in module inputs and outputs.
+    - Avoid hiding security posture behind defaults.
 
 </securityAndGovernance>
 
@@ -180,7 +165,7 @@
     - Validate drift handling behavior.
     - Validate AKS compatibility.
     - Validate module boundary integrity.
-    - Validate operational maintainability.
+    - Validate Terraform maintainability.
 
 </testingAndValidation>
 

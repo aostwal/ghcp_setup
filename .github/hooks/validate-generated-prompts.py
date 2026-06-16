@@ -2,6 +2,11 @@ from pathlib import Path
 import re
 import sys
 
+try:
+    import tiktoken
+except ImportError:
+    tiktoken = None
+
 ROOT = Path(__file__).resolve().parent.parent
 
 MODULES_DIR = ROOT / "modules"
@@ -19,9 +24,35 @@ PROFILE_COMMAND_PATTERN = re.compile(
 FAILURES = []
 WARNINGS = []
 
+TOKEN_WARN_THRESHOLD = 15000
+TOKEN_FAIL_THRESHOLD = 25000
+
+if tiktoken is not None:
+    TOKEN_ENCODING = tiktoken.get_encoding("cl100k_base")
+else:
+    TOKEN_ENCODING = None
+
 
 def read_file(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def count_tokens(content: str) -> int:
+
+    if TOKEN_ENCODING is not None:
+        return len(
+            TOKEN_ENCODING.encode(content)
+        )
+
+    return int(len(content) / 4)
+
+
+def token_mode() -> str:
+
+    if TOKEN_ENCODING is not None:
+        return "accurate"
+
+    return "estimated"
 
 
 def validate_required_directories():
@@ -103,6 +134,19 @@ def validate_generated_prompt(prompt_path: Path):
 
     content = read_file(prompt_path)
 
+    tokens = count_tokens(content)
+
+    if tokens > TOKEN_FAIL_THRESHOLD:
+        FAILURES.append(
+            f"Generated prompt exceeds token fail threshold "
+            f"({tokens}/{TOKEN_FAIL_THRESHOLD}, {token_mode()}): {prompt_path.name}"
+        )
+    elif tokens > TOKEN_WARN_THRESHOLD:
+        WARNINGS.append(
+            f"Generated prompt exceeds token warning threshold "
+            f"({tokens}/{TOKEN_WARN_THRESHOLD}, {token_mode()}): {prompt_path.name}"
+        )
+
     if "<profile>" not in content:
         WARNINGS.append(
             f"Generated prompt may not contain profile wrapper: {prompt_path.name}"
@@ -181,6 +225,11 @@ def validate_generated_prompts():
 
 
 def print_results():
+
+    print(
+        f"\nToken governance: {token_mode()} counts, "
+        f"warn>{TOKEN_WARN_THRESHOLD}, fail>{TOKEN_FAIL_THRESHOLD}"
+    )
 
     if WARNINGS:
 

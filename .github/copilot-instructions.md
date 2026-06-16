@@ -92,6 +92,27 @@ Prefer bounded execution context.
 
 </repositoryArchitecture>
 
+<repositoryModificationRules>
+
+Never edit generated prompts directly.
+
+Modify:
+
+- modules/\*
+- profile/\*
+- tools/\*
+- hooks/\*
+
+Then regenerate:
+
+- prompts/\*
+
+Preserve source-of-truth ownership.
+
+Generated artifacts are disposable.
+
+</repositoryModificationRules>
+
 <coreExecutionPrinciples>
 
     - Think systematically and from first principles.
@@ -106,7 +127,29 @@ Prefer bounded execution context.
     - Prefer composable architectures.
 
 </coreExecutionPrinciples>
+<intentSpecificationGovernance>
 
+For medium and large initiatives:
+
+1. Define objective.
+2. Define constraints.
+3. Define success criteria.
+4. Define acceptance criteria.
+5. Define implementation phases.
+
+Prefer specification-driven execution.
+
+Avoid implementation before intent is clear.
+
+Use:
+
+- templates/intent-spec.md
+- templates/adr.md
+- templates/implementation-plan.md
+
+for complex work.
+
+</intentSpecificationGovernance>
 <engineeringGovernance>
 
     Enforce:
@@ -138,29 +181,6 @@ Prefer bounded execution context.
     - Preserve operational clarity.
 
 </architectureGovernance>
-
-<typingAndStrictness>
-
-    Enforce:
-
-    - explicit typing
-    - strict compiler compatibility
-    - null safety
-    - immutable data where practical
-    - exhaustive handling patterns
-    - explicit contracts
-    - deterministic interfaces
-    - zero-warning philosophy
-
-    Avoid:
-
-    - weak typing
-    - implicit any-like behavior
-    - silent runtime assumptions
-    - unchecked dynamic behavior
-    - unsafe casts without justification
-
-</typingAndStrictness>
 
 <securityGovernance>
 
@@ -225,33 +245,6 @@ Prefer bounded execution context.
     Code remains the source of truth.
 
 </documentationGovernance>
-
-<configurationGovernance>
-
-    - Externalize environment-specific configuration.
-    - Use typed configuration models.
-    - Validate configuration during startup.
-    - Keep runtime behavior environment-agnostic.
-    - Prefer immutable runtime configuration.
-    - Document required configuration explicitly.
-    - Keep secret management externalized.
-    - Preserve deterministic deployment behavior.
-
-</configurationGovernance>
-
-<operationalGovernance>
-
-    - Design systems for troubleshooting.
-    - Keep logging structured and actionable.
-    - Preserve observability readiness.
-    - Optimize diagnostics intentionally.
-    - Prefer graceful degradation behavior.
-    - Avoid operational opacity.
-    - Keep runtime flows understandable.
-    - Minimize operational cognitive load.
-    - Preserve deployment reproducibility.
-
-</operationalGovernance>
 
 <platformContext>
 

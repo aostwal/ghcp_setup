@@ -48,10 +48,6 @@
     - modules/shell-platform.prompt.md
     - modules/powershell-platform.prompt.md
 
-    Optional execution module:
-
-    - modules/execution-runtime.prompt.md
-
 </moduleComposition>
 
 <runtimeActivationGuidance>
