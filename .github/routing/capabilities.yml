@@ -1,0 +1,54 @@
+capabilities:
+  backend-development:
+    profiles:
+      - python-docker-azure
+      - frontend-azure-platform
+      - kubectl-plugin-architect
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+  frontend-development:
+    profiles:
+      - frontend-azure-platform
+    modules:
+      - frontend-platform.prompt.md
+  cloud-automation:
+    profiles:
+      - terraform-aks-platform
+      - devops-runtime-engineer
+      - aks-observability-engineer
+    modules:
+      - azure-cloud.prompt.md
+      - terraform-devops.prompt.md
+      - kubernetes-platform.prompt.md
+  platform-engineering:
+    profiles:
+      - devops-runtime-engineer
+      - kubectl-plugin-architect
+      - terraform-aks-platform
+    modules:
+      - docker-platform.prompt.md
+      - shell-platform.prompt.md
+      - powershell-platform.prompt.md
+  testing:
+    profiles:
+      - devops-runtime-engineer
+      - frontend-azure-platform
+      - python-docker-azure
+    modules: []
+  observability:
+    profiles:
+      - distributed-observability-architect
+      - aks-observability-engineer
+      - devops-runtime-engineer
+    modules:
+      - azure-observability.prompt.md
+      - runtime-observability.prompt.md
+      - distributed-observability.prompt.md
+  data-engineering:
+    profiles:
+      - devops-runtime-engineer
+      - python-docker-azure
+    modules:
+      - python-platform.prompt.md
+      - go-platform.prompt.md

@@ -1,0 +1,44 @@
+intents:
+  implement:
+    description: Execute a scoped engineering change.
+    workflow: intent-spec -> implementation-plan -> profile -> skills -> token-estimate -> execution
+    primary_profiles:
+      - devops-runtime-engineer
+      - python-docker-azure
+      - terraform-aks-platform
+    supporting_skills:
+      - python-automation
+      - shell-automation
+      - gitlab-pipeline-authoring
+      - dev-environment-platform
+  design:
+    description: Shape architecture and tradeoffs.
+    workflow: intent-spec -> adr -> profile -> token-estimate -> recommendation
+    primary_profiles:
+      - distributed-observability-architect
+      - frontend-azure-platform
+      - kubectl-plugin-architect
+  review:
+    description: Evaluate changes for correctness and quality.
+    workflow: intent-spec -> review-plan -> profile -> token-estimate -> findings
+    primary_profiles:
+      - devops-runtime-engineer
+      - distributed-observability-architect
+      - terraform-aks-platform
+  troubleshoot:
+    description: Diagnose symptoms and isolate failure causes.
+    workflow: intent-spec -> troubleshooting-plan -> profile -> skill -> token-estimate -> diagnosis
+    primary_profiles:
+      - devops-runtime-engineer
+      - aks-observability-engineer
+      - python-docker-azure
+    supporting_skills:
+      - shell-automation
+      - dev-environment-platform
+  optimize:
+    description: Improve token, workflow, or runtime efficiency.
+    workflow: intent-spec -> optimization-plan -> profile -> skill -> token-estimate -> recommendation
+    primary_profiles:
+      - devops-runtime-engineer
+      - distributed-observability-architect
+      - terraform-aks-platform

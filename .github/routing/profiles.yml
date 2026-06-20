@@ -1,0 +1,87 @@
+profiles:
+  aks-observability-engineer:
+    command: /aks-observability-engineer
+    capability: observability
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - kubernetes-platform.prompt.md
+      - azure-cloud.prompt.md
+      - azure-observability.prompt.md
+      - gitlab-ci.prompt.md
+      - execution-runtime.prompt.md
+  devops-runtime-engineer:
+    command: /devops-runtime-engineer
+    capability: platform-engineering
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - gitlab-ci.prompt.md
+      - kubernetes-platform.prompt.md
+      - docker-platform.prompt.md
+      - azure-cloud.prompt.md
+      - azure-observability.prompt.md
+      - runtime-observability.prompt.md
+      - python-platform.prompt.md
+      - shell-platform.prompt.md
+      - powershell-platform.prompt.md
+      - execution-runtime.prompt.md
+      - helm-platform.prompt.md
+  distributed-observability-architect:
+    command: /distributed-observability-architect
+    capability: observability
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - azure-cloud.prompt.md
+      - azure-observability.prompt.md
+      - distributed-observability.prompt.md
+      - java-platform.prompt.md
+      - dotnet-platform.prompt.md
+      - kubernetes-platform.prompt.md
+  frontend-azure-platform:
+    command: /frontend-azure-platform
+    capability: frontend-development
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - frontend-platform.prompt.md
+      - docker-platform.prompt.md
+      - azure-cloud.prompt.md
+      - gitlab-ci.prompt.md
+      - execution-runtime.prompt.md
+  kubectl-plugin-architect:
+    command: /kubectl-plugin-architect
+    capability: platform-engineering
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - go-platform.prompt.md
+      - kubernetes-platform.prompt.md
+      - docker-platform.prompt.md
+      - execution-runtime.prompt.md
+  python-docker-azure:
+    command: /python-docker-azure
+    capability: backend-development
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - python-platform.prompt.md
+      - docker-platform.prompt.md
+      - azure-cloud.prompt.md
+      - gitlab-ci.prompt.md
+      - execution-runtime.prompt.md
+      - shell-platform.prompt.md
+      - powershell-platform.prompt.md
+  terraform-aks-platform:
+    command: /terraform-aks-platform
+    capability: cloud-automation
+    modules:
+      - core-engineering.prompt.md
+      - workflow-orchestration.prompt.md
+      - terraform-devops.prompt.md
+      - azure-cloud.prompt.md
+      - kubernetes-platform.prompt.md
+      - gitlab-ci.prompt.md
+      - execution-runtime.prompt.md
+      - helm-platform.prompt.md

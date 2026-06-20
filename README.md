@@ -190,6 +190,27 @@ profiles = orchestration
 
 ---
 
+## Organizational Standards
+
+Location:
+
+```text
+org/standards/
+```
+
+Organizational standards capture reusable company-specific guidance at a higher level than modules.
+
+Use standards for:
+
+* ownership
+* scope
+* review process
+* future content planning
+
+Standards should stay lightweight and avoid technology tutorial detail.
+
+---
+
 ## Profiles vs Modules vs Skills
 
 GHCP separates cognition by loading frequency and responsibility:
@@ -209,6 +230,26 @@ Use profiles to compose the minimum required modules for a specific Copilot runt
 Use skills for narrow operational tasks that should not be loaded into every profile.
 
 This keeps core prompts focused while still making specialized task help available when needed.
+
+---
+
+## Routing Metadata
+
+Location:
+
+```text
+routing/
+```
+
+Routing metadata describes how intents, capabilities, profiles, and skills relate without adding new runtime behavior.
+
+Use it to support:
+
+* intent recommendations
+* capability-based selection
+* profile lookup
+* skill recommendations
+* token-aware routing decisions
 
 ---
 
@@ -610,6 +651,19 @@ templates/implementation-plan.md
 ```
 
 Tie the implementation plan back to the intent specification and ADR when applicable.
+
+---
+
+## Future Organizational Knowledge
+
+Use the standards layer for future organizational knowledge that should be shared across the platform without becoming a technology-specific module.
+
+Prefer this workflow:
+
+* identify repeated organizational guidance
+* decide whether it belongs in a standard, profile, module, or skill
+* capture it in the smallest reusable artifact
+* keep routing metadata aligned with the source of truth
 
 ---
 

@@ -1,0 +1,40 @@
+skills:
+  dev-environment-platform:
+    purpose: local environment setup and repair
+    uses:
+      - install verification
+      - PATH troubleshooting
+      - runtime availability checks
+    recommended_intents:
+      - implement
+      - troubleshoot
+  python-automation:
+    purpose: small Python automation and maintenance tasks
+    uses:
+      - repository scripting
+      - file inspection
+      - validation helpers
+    recommended_intents:
+      - implement
+      - troubleshoot
+      - optimize
+  shell-automation:
+    purpose: focused shell command automation
+    uses:
+      - command composition
+      - filesystem checks
+      - cross-platform scripting
+    recommended_intents:
+      - implement
+      - troubleshoot
+      - optimize
+  gitlab-pipeline-authoring:
+    purpose: GitLab CI pipeline authoring and repair
+    uses:
+      - pipeline structure
+      - job and rule tuning
+      - artifact and cache behavior
+    recommended_intents:
+      - implement
+      - troubleshoot
+      - optimize
