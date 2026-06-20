@@ -2,6 +2,7 @@ profiles:
   aks-observability-engineer:
     command: /aks-observability-engineer
     capability: observability
+    workload_family: observability
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md
@@ -13,6 +14,7 @@ profiles:
   devops-runtime-engineer:
     command: /devops-runtime-engineer
     capability: platform-engineering
+    workload_family: platform-engineering
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md
@@ -30,6 +32,7 @@ profiles:
   distributed-observability-architect:
     command: /distributed-observability-architect
     capability: observability
+    workload_family: observability
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md
@@ -42,6 +45,7 @@ profiles:
   frontend-azure-platform:
     command: /frontend-azure-platform
     capability: frontend-development
+    workload_family: application-development
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md
@@ -53,6 +57,7 @@ profiles:
   kubectl-plugin-architect:
     command: /kubectl-plugin-architect
     capability: platform-engineering
+    workload_family: kubernetes-platform
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md
@@ -63,6 +68,7 @@ profiles:
   python-docker-azure:
     command: /python-docker-azure
     capability: backend-development
+    workload_family: application-development
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md
@@ -76,6 +82,7 @@ profiles:
   terraform-aks-platform:
     command: /terraform-aks-platform
     capability: cloud-automation
+    workload_family: cloud-automation
     modules:
       - core-engineering.prompt.md
       - workflow-orchestration.prompt.md

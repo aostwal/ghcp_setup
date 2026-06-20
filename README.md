@@ -37,17 +37,25 @@ GHCP solves this through modular cognition composition.
 │
 ├── copilot-instructions.md
 │
+├── org/
+│
 ├── modules/
 │
 ├── profile/
 │
-├── prompts/
+├── skills/
 │
-├── hooks/
+├── templates/
+│
+├── routing/
 │
 ├── tools/
 │
-└── skills/
+├── hooks/
+│
+├── prompts/
+│
+└── ...
 ```
 
 ---
@@ -57,13 +65,23 @@ GHCP solves this through modular cognition composition.
 ```text
 Governance
         ↓
+Organization Standards
+        ↓
 Modules
         ↓
 Profiles
         ↓
-Builder
+Skills
         ↓
-Runtime Prompts
+Templates
+        ↓
+Routing Metadata
+        ↓
+Tools
+        ↓
+Hooks
+        ↓
+Generated Runtime Prompts
         ↓
 GitHub Copilot Chat
 ```
@@ -108,7 +126,6 @@ Current modules:
 ```text
 core-engineering.prompt.md
 workflow-orchestration.prompt.md
-execution-governance.prompt.md
 execution-runtime.prompt.md
 
 azure-cloud.prompt.md
@@ -132,8 +149,6 @@ frontend-platform.prompt.md
 
 shell-platform.prompt.md
 powershell-platform.prompt.md
-
-prompt-architecture.prompt.md
 ```
 
 Modules contain:
@@ -209,6 +224,17 @@ Use standards for:
 
 Standards should stay lightweight and avoid technology tutorial detail.
 
+Current standards:
+
+```text
+engineering.standard.md
+cloud.standard.md
+security.standard.md
+gitlab.standard.md
+observability.standard.md
+testing.standard.md
+```
+
 ---
 
 ## Profiles vs Modules vs Skills
@@ -247,6 +273,7 @@ Use it to support:
 
 * intent recommendations
 * capability-based selection
+* workload family compatibility
 * profile lookup
 * skill recommendations
 * token-aware routing decisions
@@ -362,6 +389,8 @@ Total........................ 18000 tokens
 ```
 
 This enables targeted optimization.
+
+It also supports the smallest-suitable-profile strategy used by recommendation tooling.
 
 ---
 
@@ -511,6 +540,78 @@ PowerShell
 
 ---
 
+# Architecture Overview
+
+GHCP is organized as a layered knowledge system:
+
+* Governance defines repository-wide rules and operating discipline.
+* Standards capture organization-specific guidance that should be shared broadly.
+* Profiles compose the minimum module set for a specific Copilot runtime command.
+* Modules hold reusable engineering knowledge and domain expertise.
+* Skills provide on-demand task acceleration without permanent profile cost.
+* Routing metadata connects intents, capabilities, workload families, profiles, and skills.
+* Tooling generates, measures, recommends, and validates runtime artifacts.
+
+---
+
+# Token Optimization
+
+The platform reduces token cost by keeping only the required context active.
+
+Key practices:
+
+* generate runtime prompts from source profiles and modules
+* use accurate token counting when `tiktoken` is available
+* preserve estimated counting as a backwards-compatible fallback
+* recommend the smallest suitable profile for a task
+* estimate context size before execution
+* keep skills narrow and loaded on demand
+
+---
+
+# Current Capability Coverage
+
+Covered:
+
+* Azure
+* Terraform
+* Kubernetes
+* Helm
+* GitLab
+* Python
+* Shell
+* PowerShell
+* Java
+* Go
+* C#
+* React
+* Observability
+
+Known gaps:
+
+* Playwright
+* Squash
+
+---
+
+# v1.0.0 Status
+
+Repository Status: Stable
+
+Architecture Status: Production Ready
+
+Current Focus: Organization-specific knowledge onboarding
+
+Future Enhancements:
+
+* Wheelwright
+* Terraform Deployer
+* Kubernetes Deployer
+* Telemetry SDK
+* Internal GitLab Framework
+
+---
+
 # AI Credit Optimization Strategy
 
 GitHub Copilot now operates under AI credit consumption models.
@@ -561,6 +662,8 @@ python tools/profile-builder.py --accurate
 
 Without `tiktoken`, the builder preserves the existing estimated token mode.
 
+The builder also powers profile cost reporting used by recommendation and context estimation tooling.
+
 ---
 
 ### Enforce Token Governance
@@ -577,6 +680,8 @@ Run:
 ```bash
 python hooks/validate-generated-prompts.py
 ```
+
+The hook keeps prompt generation honest without forcing a hard dependency on `tiktoken`.
 
 ---
 
